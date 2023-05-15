@@ -41,7 +41,7 @@
           btn.addEventListener("click", ()=>{
             const obj ={'amount':amt.value,'description':dis.value,'category': cat.value};
             
-            axios.post("https://crudcrud.com/api/2ad66ea64d544c418289e4737e936246/expences",obj)
+            axios.post("https://crudcrud.com/api/a3696d1e9c654e4d987872893e48f717/expences",obj)
             .then((response)=>{display()})
             .catch((error)=> console.log(error) )
             
@@ -50,16 +50,23 @@
           function display(){
             expense_list.innerHTML='';
 
-            axios.get("https://crudcrud.com/api/2ad66ea64d544c418289e4737e936246/expences")
+            axios.get("https://crudcrud.com/api/a3696d1e9c654e4d987872893e48f717/expences")
               .then((res)=>{res.data.forEach((x)=>{
+
                 const expenseItem = document.createElement('li');
                 const delbtn = document.createElement('button');
+                const editbtn = document.createElement('button');
+                
                 expenseItem.textContent = `${x.amount} - ${x.description} - ${x.category}`;
                 delbtn.textContent = 'Delete';
+                editbtn.textContent ='Edit';
+
                 delbtn.addEventListener('click',()=>del(x._id))
+                editbtn.addEventListener('click',()=>edit(x))
                 
                 expense_list.appendChild(expenseItem);
                 expense_list.appendChild(delbtn);
+                expense_list.appendChild(editbtn);
 
 
                 })})
@@ -69,10 +76,18 @@
           
 
           function del(x){
-            axios.delete("https://crudcrud.com/api/2ad66ea64d544c418289e4737e936246/expences"+`/${x}`)
+            axios.delete("https://crudcrud.com/api/a3696d1e9c654e4d987872893e48f717/expences"+`/${x}`)
             .then((x)=>display())
             .catch((x)=>console.log(x))
             
+          }
+
+          function edit(x){
+            amt.value = x.amount;
+            dis.value = x.description;
+            cat.value = x.category;
+            del(x._id);
+
           }
 
         </script>
