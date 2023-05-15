@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Expenses Tracker</title>
+        
+      </head>
+      <body>
+        <h1>Expenses Tracker</h1>
+    
+        <form>
+          <label for="expenses">Amount:</label>
+          <input type="number" id="expenses"><br>
+    
+          <label for="choosedescription">Description:</label>
+          <input type="text" id="choosedescription"><br>
+    
+          <label for="expenses-category">Category:</label>
+          <select id="expenses-category">
+            <option value="food">Food</option>
+            <option value="transportation">Transportation</option>
+            <option value="housing">Housing</option>
+            <option value="entertainment">Entertainment</option>
+          </select><br>
+    
+          <button type="button">Add Expense</button>
+        </form>
+    
+        <h2>Expenses List</h2>
+    
+        <ul id="expense-list"></ul>
+    
+        
+        <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"> </script>
+        <script>
+          const amt = document.querySelector("#expenses");
+          const dis = document.querySelector("#choosedescription");
+          const cat = document.querySelector("#expenses-category");
+          const btn = document.querySelector("button");
+          const expense_list = document.querySelector("#expense-list")
+          btn.addEventListener("click", ()=>{
+            const obj ={'amount':amt.value,'description':dis.value,'category': cat.value};
+            
+            axios.post("https://crudcrud.com/api/2ad66ea64d544c418289e4737e936246/expences",obj)
+            .then((response)=>{display()})
+            .catch((error)=> console.log(error) )
+            
+
+          })
+          function display(){
+            expense_list.innerHTML='';
+
+            axios.get("https://crudcrud.com/api/2ad66ea64d544c418289e4737e936246/expences")
+              .then((res)=>{res.data.forEach((x)=>{
+                const expenseItem = document.createElement('li');
+                const delbtn = document.createElement('button');
+                expenseItem.textContent = `${x.amount} - ${x.description} - ${x.category}`;
+                delbtn.textContent = 'Delete';
+                delbtn.addEventListener('click',()=>del(x._id))
+                
+                expense_list.appendChild(expenseItem);
+                expense_list.appendChild(delbtn);
+
+
+                })})
+              .catch((err)=>console.log(err))
+          
+          }
+          
+
+          function del(x){
+            axios.delete("https://crudcrud.com/api/2ad66ea64d544c418289e4737e936246/expences"+`/${x}`)
+            .then((x)=>display())
+            .catch((x)=>console.log(x))
+            
+          }
+
+        </script>
+          
+      </body>
+    </html>
